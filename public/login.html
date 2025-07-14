@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | AgriGlobal</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <div
+      class="container d-flex align-items-center justify-content-center min-vh-100"
+    >
+      <div class="card shadow p-4" style="width: 100%; max-width: 400px">
+        <h2 class="text-center mb-4 text-success fw-bold">Login</h2>
+        <form id="loginForm">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Enter email"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success">Login</button>
+          </div>
+        </form>
+        <p class="text-center mt-3">
+          Don't have an account?
+          <a href="register.html" class="text-success fw-bold">Register</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Login JS -->
+    <script>
+      const loginForm = document.getElementById("loginForm");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const credentials = {
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+        };
+
+        try {
+          const response = await fetch("http://127.0.0.1:8081/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentials),
+          });
+
+          if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Server Error: ${text}`);
+          }
+
+          const result = await response.json();
+          alert(result.message);
+
+          if (result.message === "login success") {
+            window.location.href = "index2.html";
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Login failed: " + error.message);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Farm2Market</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Icons (for cart/profile) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (needed for Toast) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body.custom-bg {
+      background-color: #e6f2e6;
+    }
+     .container-fluid{
+      position: sticky;
+    }
+    .custom-hero {
+      position: relative;
+      min-height: 100vh;
+      background: url('https://th.bing.com/th/id/R.2d9805880904ff216e349fb027996c91?rik=CVxB1r4PZYLxAw&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fwp1886349.jpg&ehk=um1QxGABaEff4i3roWWhIgfATHDWBvM4kuQb1AxMEpU%3d&risl=&pid=ImgRaw&r=0') no-repeat center center/cover;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .custom-hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+    .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+    .custom-hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .carousel-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 0 80px;
+    }
+
+    .carousel-cards {
+      display: flex;
+      transition: transform 0.5s ease;
+      width: 100%;
+    }
+
+    .carousel-card {
+      flex: 0 0 33.33%;
+      padding: 10px;
+    }
+
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background-color: white;
+      border: 2px solid green;
+      border-radius: 50%;
+      color: green;
+      width: 60px;
+      height: 60px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .carousel-button.left {
+      left: 20px;
+    }
+
+    .carousel-button.right {
+      right: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .carousel-card {
+        flex: 0 0 100%;
+      }
+      .carousel-container {
+        padding: 0 40px;
+      }
+    }
+
+    .badge-notify {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: red;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .cart-total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+
+<body class="custom-bg">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Farm2Market</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-center nav-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <button class="btn btn-light position-relative me-2" data-bs-toggle="modal" data-bs-target="#cartModal">
+          <i class="bi bi-cart4 fs-5"></i>
+          <span class="badge-notify" id="cart-count">0</span>
+        </button>
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#profileModal">
+          <i class="bi bi-person-circle fs-5"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="text-center custom-hero">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Empowering Farmers, Connecting the World</h1>
+      <p class="lead mb-4">
+        A platform helping rural farmers create, manage, and sell value-added products globally.
+        Promoting entrepreneurship, sustainability, and economic growth through technology.
+      </p>
+      <a href="#products" class="btn btn-success btn-lg">Explore Products</a>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold">Our Products</h2>
+      
+      <div class="carousel-container">
+        <button class="carousel-button left" id="left-btn">&#8592;</button>
+        <div class="carousel-cards">
+          <!-- Product Cards -->
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="organic.png" class="card-img-top" alt="Organic Spices">
+              <div class="card-body">
+                <h5 class="card-title">Organic Spices</h5>
+                <p class="card-text">Freshly grown and hand-processed spices from rural farms.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Organic Spices" data-price="200">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="crafts.png" class="card-img-top" alt="Handmade Crafts">
+              <div class="card-body">
+                <h5 class="card-title">Handmade Crafts</h5>
+                <p class="card-text">Beautiful artisan products crafted by local farming communities.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Handmade Crafts" data-price="350">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="homemade jams.png" class="card-img-top" alt="Homemade Jams">
+              <div class="card-body">
+                <h5 class="card-title">Homemade Jams</h5>
+                <p class="card-text">Delicious jams made from organic fruits, packed with love.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Homemade Jams" data-price="180">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="herbaltea.jpg" class="card-img-top" alt="Herbal Tea">
+              <div class="card-body">
+                <h5 class="card-title">Herbal Tea</h5>
+                <p class="card-text">Natural Herbal teas crafted from fresh, pesticide-free herbs.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Herbal Tea" data-price="150">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/handwoven-baskets-linda-phelps.jpg" class="card-img-top" alt="Handwoven Baskets">
+              <div class="card-body">
+                <h5 class="card-title">Handwoven Baskets</h5>
+                <p class="card-text">Eco-friendly handwoven by skilled village artisans.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Handwoven Baskets" data-price="300">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card">
+            <div class="card h-100 shadow-sm">
+              <img src="organic_honey.jpg" class="card-img-top" alt="Organic Honey">
+              <div class="card-body">
+                <h5 class="card-title">Organic Honey</h5>
+                <p class="card-text">Pure organic honey harvested from sustainable farms.</p>
+                <button class="btn btn-outline-success ms-2 add-to-cart" data-name="Organic Honey" data-price="220">Add to Cart</button>
+                <a href="order.html" class="btn btn-success">Order Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-button right" id="right-btn">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+<!--ABOUT SECTION-->
+<!--ABOUT SECTION-->
+<section id="about" class="custom-about py-5">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-4">About Us</h2>
+      <p class="lead">
+        Farm2Market empowers rural farmers with tools to create and sell quality products globally.
+        We support sustainability, innovation, and local artisan empowerment.
+      </p>
+      <p class="lead">
+        From organic spices to handmade crafts, we bridge the gap between farms and global markets.
+      </p>
+  
+      <!-- Feedback Form -->
+      <div class="feedback-form mt-5 p-4 rounded" style="background-color: #c6f9d5; max-width: 500px; margin: 0 auto;">
+        <h4 class="fw-bold mb-3">We value your opinion.</h4>
+        <p>How would you rate your overall experience?</p>
+        <div class="stars mb-3" id="starRating" style="font-size: 24px; cursor: pointer; color: gray;">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+        </div>
+        <p>Kindly take a moment to tell us what you think.</p>
+        <textarea id="feedbackText" class="form-control mb-3" rows="4" placeholder="Write your feedback here..."></textarea>
+        <button class="btn btn-primary mb-3" onclick="submitFeedback()">Share my feedback</button>
+    </div>
+  
+        <!-- Social Media Icons -->
+        <div class="social-icons mt-3">
+          <a href="#" class="me-3 text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+          <a href="#" class="me-3 text-dark"><i class="fab fa-twitter fa-lg"></i></a>
+          <a href="#" class="me-3 text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-dark"><i class="fab fa-linkedin fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  <!-- Cart Modal -->
+  <div class="modal fade" id="cartModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Your Cart</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cart-items"></div>
+          <div class="cart-total text-end mt-3">Total: ₹<span id="cart-total">0</span></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" onclick="window.location.href='order.html'">Proceed to Checkout</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Your Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-2"><label class="form-label">Name</label><input type="text" class="form-control" value="John Doe" /></div>
+            <div class="mb-2"><label class="form-label">Address</label><textarea class="form-control">123, Village Lane, India</textarea></div>
+            <div class="mb-2"><label class="form-label">Mobile</label><input type="text" class="form-control" value="9876543210" /></div>
+            <div class="mb-2"><label class="form-label">Nationality</label><input type="text" class="form-control" value="Indian" /></div>
+            <div class="mb-2"><label class="form-label">Role</label>
+              <select class="form-select">
+                <option selected>Buyer</option>
+                <option>Seller</option>
+              </select>
+            </div>
+            <!-- Sign Out Button -->
+            <div class="text-center mt-4">
+                <button onclick="signOut()" class="btn btn-danger">Sign Out</button>
+            </div>
+  
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="signOutToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+      <div class="d-flex">
+        <div class="toast-body">
+          Signed out successfully!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<footer class="bg-success text-white text-center py-3">
+    © 2025 Farm2Market. Empowering Farmers, Enriching Lives.
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Carousel Script -->
+  <script>
+    let currentIndex = 0;
+    const cards = document.querySelector('.carousel-cards');
+    const totalCards = document.querySelectorAll('.carousel-card').length;
+  
+    document.getElementById('right-btn').addEventListener('click', () => {
+      if (currentIndex < totalCards - 3) {
+        currentIndex++;
+        cards.style.transform = `translateX(-${currentIndex * 33.33}%)`;
+      }
+    });
+  
+    document.getElementById('left-btn').addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        cards.style.transform = `translateX(-${currentIndex * 33.33}%)`;
+      }
+    });
+
+    const stars = document.querySelectorAll('.star');
+    const feedbackText = document.getElementById('feedbackText');
+    let selectedRating = 0;
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            selectedRating = index + 1;
+            updateStars();
+        });
+    });
+
+    function updateStars() {
+        stars.forEach((star, index) => {
+            star.style.color = index < selectedRating ? 'gold' : 'gray';
+        });
+    }
+
+    function submitFeedback() {
+        if (selectedRating === 0 && feedbackText.value.trim() === "") {
+            alert("Please rate your experience or write feedback before submitting.");
+            return;
+        }
+
+        alert("Thanks for your feedback!");
+
+        // Clear rating
+        selectedRating = 0;
+        updateStars();
+
+        // Clear feedback text
+        feedbackText.value = "";
+    }
+  </script>
+  
+  <!-- Cart Script -->
+  <script>
+    let cart = [];
+  
+    function updateCartUI() {
+      const cartItems = document.getElementById('cart-items');
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+  
+      cartItems.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+        cartItems.innerHTML += `
+          <div class="cart-item d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+              <img src="${item.img}" width="60" />
+              <div>
+                <strong>${item.name}</strong><br/>
+                ₹${item.price}
+              </div>
+            </div>
+            <div class="quantity-control">
+              <button class="btn btn-sm btn-outline-danger" onclick="decreaseQuantity(${index})">-</button>
+              <span>${item.quantity}</span>
+              <button class="btn btn-sm btn-outline-success" onclick="increaseQuantity(${index})">+</button>
+            </div>
+            <button class="btn btn-sm btn-outline-dark" onclick="removeItem(${index})">Remove</button>
+          </div>`;
+      });
+  
+      cartTotal.textContent = total;
+      cartCount.textContent = cart.length;
+    }
+  
+    function increaseQuantity(index) {
+      cart[index].quantity++;
+      updateCartUI();
+    }
+  
+    function decreaseQuantity(index) {
+      if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+      } else {
+        cart.splice(index, 1);
+      }
+      updateCartUI();
+    }
+  
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+  
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', () => {
+        const name = button.getAttribute('data-name');
+        const price = parseFloat(button.getAttribute('data-price'));
+        const img = button.getAttribute('data-img');
+  
+        const existing = cart.find(item => item.name === name);
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({ name, price, img, quantity: 1 });
+        }
+        updateCartUI();
+      });
+    });
+  function signOut() {
+    // Clear user data from localStorage/sessionStorage if used
+    // localStorage.removeItem('user');
+    // sessionStorage.removeItem('user');
+
+    // Redirect to home or login page
+    window.location.href = 'index.html';
+  }
+
+  function signOut() {
+      // Show toast
+      var toast = new bootstrap.Toast(document.getElementById('signOutToast'));
+      toast.show();
+
+      // Redirect after a short delay (e.g., 2 seconds)
+      setTimeout(function() {
+        // Clear user data from localStorage/sessionStorage if needed
+        // localStorage.removeItem('user');
+        // sessionStorage.removeItem('user');
+
+        // Redirect to home page (index.html)
+        window.location.href = 'index.html';
+      }, 2000); // 2 seconds delay
+    }
+
+  </script>
+  </body>
+  </html>
+  

@@ -1,0 +1,52 @@
+/* Custom background */
+.custom-bg {
+  background-color: #e8f5e9; /* soft light green */
+}
+
+/* Hero Section */
+.custom-hero {
+  background: linear-gradient(to right, #a8e6cf, #dcedc1);
+  color: #2e7d32;
+}
+
+/* About Section */
+.custom-about {
+  background-color: #f1f8e9;
+}
+
+/* Navbar brand styling */
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Card hover effect */
+.card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+  box-shadow: 0 8px 16px rgba(0, 128, 0, 0.3);
+}
+
+/* Form card styling */
+.card {
+  border: none;
+  border-radius: 1rem;
+}
+
+/* Buttons */
+.btn-success {
+  background-color: #43a047;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #388e3c;
+}
+
+/* Link styling inside forms */
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
